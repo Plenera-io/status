@@ -7,7 +7,12 @@
       {
         "at": "2026-11-23T11:09:30Z",
         "message": "We’re checking that status updates reach this page. No service interruption is expected."
+      },
+      {
+        "at": "2026-11-23T11:11:32Z",
+        "message": "The publishing drill is complete. Both service checks remained operational during the drill."
       }
-    ]
+    ],
+    "endsAt": "2026-11-23T11:11:32Z"
   }
 ]
