@@ -1,1 +1,13 @@
-[]
+[
+  {
+    "kind": "drill",
+    "title": "Status page publishing drill",
+    "startsAt": "2026-11-23T11:09:30Z",
+    "updates": [
+      {
+        "at": "2026-11-23T11:09:30Z",
+        "message": "We’re checking that status updates reach this page. No service interruption is expected."
+      }
+    ]
+  }
+]
