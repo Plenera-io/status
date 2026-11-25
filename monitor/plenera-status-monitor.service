@@ -1,0 +1,16 @@
+[Unit]
+Description=Publish independent Plenera availability reading
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=oneshot
+DynamicUser=yes
+RuntimeDirectory=plenera-status-monitor
+LoadCredential=github-key:/etc/plenera-status/deploy-key
+ExecStart=/bin/bash /opt/plenera-status/monitor/publish.sh
+TimeoutStartSec=60s
+ProtectSystem=strict
+ProtectHome=yes
+PrivateTmp=yes
+NoNewPrivileges=yes

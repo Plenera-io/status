@@ -27,15 +27,38 @@ history. The drill does not override the automated service checks.
 
 ## Availability checks
 
-GitHub-hosted jobs request the production sign-in page and API readiness
-endpoint on a ten-minute schedule. Each publication records the observation
-time in UTC. If the last check is over 30 minutes old, browsers label the
-availability unknown. GitHub can delay scheduled jobs and disables inactive
-public-repository schedules after 60 days without repository activity. Re-enable
-the Status page workflow and run it manually if it becomes inactive. Application
-alerting remains in the existing Sentry uptime monitor.
+The `plenera-status-monitor.timer` systemd timer runs on `grok-host`, a host
+separate from Plenera production. Every five minutes it makes one request each
+to the production sign-in page and the API readiness endpoint. The web app
+check requires successful HTML. The API check requires successful JSON with
+`status: "ok"`. Redirects and eight-second probe timeouts fail the affected
+check. The journal records each successful publication's UTC observation time
+and commit SHA.
+
+The monitor publishes only the latest observation time and two booleans to
+the dedicated `joelstahre/plenera-status-readings` repository. Browsers fetch
+the [public reading](https://raw.githubusercontent.com/joelstahre/plenera-status-readings/main/status.json)
+on load and once a minute while visible. GitHub's raw-file cache can delay new
+readings by a few minutes. A reading at least 30 minutes old shows “Check
+overdue.” A missing or invalid feed shows “Monitor unavailable.” Both show
+current availability as unknown. The HTML and operator notices are published
+separately by GitHub Pages. Maintenance moves between scheduled, in progress,
+and history based on the visitor's current time. Sentry handles application
+alerting separately.
+
+Check the monitor with `systemctl list-timers plenera-status-monitor.timer`
+and `journalctl -u plenera-status-monitor.service -n 20`. The root-owned
+`/opt/plenera-status/monitor/` holds `probe.mjs` and `publish.sh`. The service runs with a
+dynamic system user and loads the data repository's write deploy key from
+`/etc/plenera-status/deploy-key`. The SSH client uses the verified GitHub host
+key in `/etc/plenera-status/github-known-hosts`. To deploy monitor changes,
+install those two files at that path, install the service and timer
+unit in `/etc/systemd/system/`, run `systemctl daemon-reload`, and enable the
+timer with `systemctl enable --now plenera-status-monitor.timer`. Restart the
+timer after schedule changes. To stop probe publication, disable and stop the
+timer. The last published reading expires normally.
 
 Run `node --test` and `node build.mjs` with Node 22 or later. Serve `dist/`
-to preview the static output. A failed service probe renders the corresponding
-failure state and still allows publication. Validation errors fail the build
-and leave the last successful page available.
+to preview the static output. The build works without the monitor or the
+Plenera app. A notice validation error fails the build and leaves the last
+successful page available.
