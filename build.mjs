@@ -3,7 +3,7 @@ import { pathToFileURL } from "node:url";
 import { describeNotice, stamp } from "./site/notice-state.mjs";
 import { components } from "./site/reading.mjs";
 
-const readingUrl = "https://raw.githubusercontent.com/Plenera-io/status/status-readings/status.json";
+const readingUrl = "https://raw.githubusercontent.com/joelstahre/plenera-status-readings/main/status.json";
 const formatTime = (value) => stamp.format(new Date(value)) + " UTC";
 const escape = (value) =>
   value.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;")

@@ -36,7 +36,8 @@ check. The journal records each successful publication's UTC observation time
 and commit SHA.
 
 The monitor publishes only the latest observation time and two booleans to
-the generated `status-readings` branch. Browsers fetch the [public reading](https://raw.githubusercontent.com/Plenera-io/status/status-readings/status.json)
+the dedicated `joelstahre/plenera-status-readings` repository. Browsers fetch
+the [public reading](https://raw.githubusercontent.com/joelstahre/plenera-status-readings/main/status.json)
 on load and once a minute while visible. GitHub's raw-file cache can delay new
 readings by a few minutes. A reading at least 30 minutes old shows “Check
 overdue.” A missing or invalid feed shows “Monitor unavailable.” Both show
@@ -48,7 +49,7 @@ alerting separately.
 Check the monitor with `systemctl list-timers plenera-status-monitor.timer`
 and `journalctl -u plenera-status-monitor.service -n 20`. The root-owned
 `/opt/plenera-status/monitor/` holds `probe.mjs` and `publish.sh`. The service runs with a
-dynamic system user and load the status repository's write deploy key from
+dynamic system user and loads the data repository's write deploy key from
 `/etc/plenera-status/deploy-key`. The SSH client uses the verified GitHub host
 key in `/etc/plenera-status/github-known-hosts`. To deploy monitor changes,
 install those two files at that path, install the service and timer

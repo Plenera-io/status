@@ -1,12 +1,12 @@
 #!/bin/bash
 set -euo pipefail
 
-remote=git@github.com:Plenera-io/status.git
-ref=refs/heads/status-readings
+remote=git@github.com:joelstahre/plenera-status-readings.git
+ref=refs/heads/main
 export GIT_SSH_COMMAND="ssh -F /dev/null -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile=/etc/plenera-status/github-known-hosts -i ${CREDENTIALS_DIRECTORY}/github-key"
 
 cd "$RUNTIME_DIRECTORY"
-git init --quiet --initial-branch=status-readings
+git init --quiet --initial-branch=main
 previous=$(git ls-remote --refs "$remote" "$ref" | cut -f1)
 /usr/bin/node /opt/plenera-status/monitor/probe.mjs > status.json
 git add status.json
